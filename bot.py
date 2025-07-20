@@ -7,6 +7,7 @@ from db import Database
 from commands.tag import setup_tag_command
 from commands.bathtime import setup_bathtime_command
 from commands.whatsit import setup_whatsit_command
+from commands.ping import setup_ping_command
 from events.on_ready import setup_on_ready_event
 from events.on_command_error import setup_on_command_error_event
 from events.on_message import setup_on_message_event
@@ -29,6 +30,7 @@ async def main():
     await setup_tag_command(bot, db)
     await setup_bathtime_command(bot, db)
     await setup_whatsit_command(bot)
+    await setup_ping_command(bot)
     setup_on_ready_event(bot)
     setup_on_command_error_event(bot)
     setup_on_message_event(bot, db)
