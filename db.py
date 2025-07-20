@@ -51,7 +51,7 @@ class Database:
         await self.delete_tag(old_name)
         return True, f"Tag `{old_name}` is now tag `{new_name}`. Have fun watching me make fun of the people who deadname `{new_name}`!"
 
-    async def save_message(self, channel_id, user_id, message, is_bot, max_context_messages=69):
+    async def save_message(self, channel_id, user_id, message, is_bot, max_context_messages=420):
         await self.db.execute(
             "INSERT INTO conversations (channel_id, user_id, message, is_bot) VALUES (?, ?, ?, ?)",
             (str(channel_id), str(user_id), message, is_bot)

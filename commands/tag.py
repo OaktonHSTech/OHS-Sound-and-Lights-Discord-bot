@@ -1,5 +1,6 @@
 from discord.ext import commands
 from typing import Optional
+from utils import reply_long_message
 
 async def setup_tag_command(bot, db):
     @bot.command(name="tag")
@@ -63,11 +64,12 @@ async def setup_tag_command(bot, db):
             tags = await db.list_tags()
             if not tags:
                 return await ctx.reply("No tags available smh. <:notlikethis:1396086703281672212>")
-            await ctx.reply(f"These are some of the ones I found: tags: {', '.join(tags)}\n#- I even checked under the couch cushions for you")
+            tag_list = f"These are some of the ones I found: {', '.join(tags)}\n#- I even checked under the couch cushions for you"
+            await reply_long_message(ctx, tag_list)
 
         else:
             tag_content = await db.get_tag(subcommand)
             if tag_content:
-                await ctx.reply(tag_content)
+                await reply_long_message(ctx, tag_content)
             else:
                 await ctx.reply(f"I don't remember if tag `{subcommand}` is a thing, probably not.") 
