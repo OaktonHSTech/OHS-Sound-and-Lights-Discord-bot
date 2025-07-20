@@ -1,0 +1,11 @@
+# .gitignore
+__pycache__/
+*.pyc
+.env
+*.db
+*.sqlite
+*.log
+*.xlsx
+.vscode/
+.idea/
+discord_token.txt

@@ -1,0 +1,15 @@
+FROM ollama/ollama:latest
+#install stuff
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends curl
+RUN apt-get install -y --no-install-recommends procps
+RUN rm -rf /var/lib/apt/lists/*
+# Start server, wait for it, pull model, then stop server
+RUN ollama serve & \
+    until curl -s http://localhost:11434/ | grep -q 'Ollama is running'; do sleep 1; done && \
+    ollama pull phi3:mini && \
+    pkill ollama
+
+EXPOSE 11434
+
+CMD ["serve"] 

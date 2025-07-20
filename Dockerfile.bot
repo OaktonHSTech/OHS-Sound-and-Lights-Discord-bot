@@ -1,0 +1,38 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.11-slim
+
+# Prevents Python from writing pyc files
+ENV PYTHONDONTWRITEBYTECODE=1
+# Keeps Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install system dependencies (sqlite3 for Python's sqlite3 module, curl for health checks, gcc for some pip packages)
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends gcc
+RUN apt-get install -y --no-install-recommends libsqlite3-0
+RUN apt-get install -y --no-install-recommends curl
+RUN apt-get install -y --no-install-recommends git
+RUN apt-get install -y --no-install-recommends procps
+RUN rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the code
+COPY . .
+
+# Make test script executable
+RUN chmod +x test_ollama_connection.py
+
+# Set a non-root user for security (optional, can be commented out if file permissions are an issue)
+# RUN useradd -m appuser && chown -R appuser /app
+# USER appuser
+
+# No ports to expose (Discord bot)
+
+# Run the bot
+CMD ["python3","bot.py"] 

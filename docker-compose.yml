@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  ollama:
+    build:
+      context: .
+      dockerfile: Dockerfile.ollama
+    container_name: salbot-ollama
+    ports:
+      - "11434:11434"  # Optional: Only needed if you want to access Ollama from the host
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - salnet
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    container_name: salbot-discord
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - MODEL=phi3:mini
+    volumes:
+      - /home/cat2/sandbox/SALbot/:/app  # Optional: Remove if not developing locally
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python3", "test_ollama_connection.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - salnet
+
+volumes:
+  ollama_data:
+    driver: local
+
+networks:
+  salnet:
+    driver: bridge
